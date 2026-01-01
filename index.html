@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equinox Portal | بوابة البلاغات</title>
     
-    <!-- استدعاء الخطوط: 
-         - "Rakkas" للجملة الشعرية (فخم جداً)
-         - "Tajawal" للنصوص العربية
-         - "Inter" للإنجليزية -->
+    <!-- استدعاء الخطوط: Rakkas (للجملة)، Tajawal (للعربية)، Inter (للإنجليزية) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rakkas&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- تعريف المتغيرات والألوان --- */
+        /* =========================================
+           1. متغيرات الألوان والإعدادات العامة
+           ========================================= */
         :root {
             --bg-color: #050510;       /* خلفية داكنة */
-            --accent: #3b82f6;         /* أزرق فخم */
+            --accent: #3b82f6;         /* أزرق نيون */
             --accent-glow: rgba(59, 130, 246, 0.4);
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -39,7 +38,7 @@
         }
 
         /* =========================================
-           1. شاشة المقدمة (Intro Section)
+           2. شاشة المقدمة (Intro Section)
            ========================================= */
         #intro-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -56,7 +55,7 @@
 
         .overlay-dim {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.95) 100%);
             z-index: 0;
         }
 
@@ -84,23 +83,44 @@
             box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        /* الجملة الشعرية (الخط الجديد الفخم: Rakkas) */
+        /* --- الجملة الشعرية (علم اليمن المضيء) --- */
         .poetic-quote {
             position: absolute;
             bottom: 20%;
-            width: 90%;
+            width: 100%;
             text-align: center;
-            font-family: 'Rakkas', serif; /* استخدام الخط الجديد */
-            font-size: 2rem; /* تكبير الخط لأنه مزخرف */
-            line-height: 1.6;
-            color: #f1f1f1;
-            text-shadow: 0 4px 20px rgba(0,0,0,1); /* ظل قوي للنص */
+            
+            /* الخط الفخم */
+            font-family: 'Rakkas', serif;
+            font-size: 3.5rem;
+            line-height: 1.4;
+            font-weight: 700;
+            
+            /* تدرج علم اليمن (أحمر - أبيض - أسود) */
+            background: linear-gradient(180deg, 
+                #CE1126 33%, 
+                #FFFFFF 33%, 
+                #FFFFFF 66%, 
+                #000000 66%
+            );
+            
+            /* قص اللون داخل النص */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            
+            /* تأثير النور والتوهج (لإظهار الأسود والأحمر في الظلام) */
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6)) 
+                    drop-shadow(0 0 30px rgba(206, 17, 38, 0.5));
+            
             z-index: 5;
             opacity: 0;
-            /* أنيميشن الظهور والاختفاء المتدرج */
-            animation: quoteLoop 7s ease-in-out infinite;
+            
+            /* أنيميشن الظهور والاختفاء */
+            animation: quoteLoop 8s ease-in-out infinite;
         }
 
+        /* حاوية نص التحميل */
         #loading-text-container {
             display: none;
             z-index: 10;
@@ -117,7 +137,7 @@
         }
 
         /* =========================================
-           2. المحتوى الرئيسي (Main Content)
+           3. المحتوى الرئيسي (Main Content)
            ========================================= */
         .container {
             max-width: 1200px; margin: 0 auto; padding: 20px;
@@ -207,6 +227,9 @@
 
         .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2); }
 
+        /* =========================================
+           4. البطاقات والروابط
+           ========================================= */
         .cards-container {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px; margin-top: 80px; padding-bottom: 50px;
@@ -240,7 +263,9 @@
         .real-card p { color: var(--text-sec); font-size: 0.9rem; transition: color 0.3s; }
         .real-card:hover p { color: #ccc; }
 
-        /* Keyframes */
+        /* =========================================
+           5. الأنيميشن
+           ========================================= */
         @keyframes pulseBtn {
             0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
             70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
@@ -272,7 +297,7 @@
             .form-grid { grid-template-columns: 1fr; }
             .animated-title { font-size: 2rem; }
             .glass-form { padding: 25px; }
-            .poetic-quote { font-size: 1.5rem; bottom: 15%; width: 95%; }
+            .poetic-quote { font-size: 2rem; bottom: 15%; width: 90%; left: 5%; }
             #start-btn { padding: 12px 30px; font-size: 1rem; }
         }
     </style>
@@ -291,7 +316,7 @@
             <source src="intro.mp4" type="video/mp4">
         </video>
 
-        <!-- الجملة الشعرية (بالخط الجديد الفخم) -->
+        <!-- الجملة الشعرية (تصميم علم اليمن المضيء) -->
         <div class="poetic-quote">
             "هههههه، يردون إسقاطك يا علمي،<br>
             ولكن لا يعلمون أن الجبال لا تسقط إلا بأمر من الله."
@@ -322,6 +347,7 @@
 
             <div class="glass-form">
                 <form onsubmit="handleEmail(event)">
+                    <!-- الحقول (تم حذف البوت والمالك) -->
                     <div class="form-grid">
                         <div>
                             <label id="lbl-rec">بريد الجهة</label>
@@ -333,17 +359,6 @@
                         </div>
                     </div>
                     
-                    <div class="form-grid">
-                        <div>
-                            <label id="lbl-bot">يوزر البوت</label>
-                            <input type="text" id="bot-user" style="direction: ltr; font-family: 'Inter', sans-serif;">
-                        </div>
-                        <div>
-                            <label id="lbl-owner">يوزر المالك</label>
-                            <input type="text" id="owner-user" style="direction: ltr; font-family: 'Inter', sans-serif;">
-                        </div>
-                    </div>
-
                     <div style="margin-bottom: 25px;">
                         <label id="lbl-msg">نص الرسالة</label>
                         <textarea id="message" required></textarea>
@@ -388,7 +403,11 @@
         </footer>
     </div>
 
+    <!-- =========================================
+         الجافاسكريبت (المنطق البرمجي)
+         ========================================= -->
     <script>
+        // دالة الدخول للموقع
         function enterSite() {
             const video = document.getElementById('intro-video');
             const btn = document.getElementById('start-btn');
@@ -407,13 +426,13 @@
             // 3. إظهار نص التحميل
             loadText.style.display = 'block';
 
-            // 4. الانتظار لمدة 13 ثانية
+            // 4. الانتظار 13 ثانية ثم الانتقال
             setTimeout(() => {
-                // >>> التعديل الجديد هنا: إيقاف الصوت والفيديو تماماً <<<
+                // >>> إيقاف الفيديو والصوت نهائياً <<<
                 video.pause();
-                video.muted = true; // زيادة أمان لضمان انقطاع الصوت
+                video.muted = true;
                 
-                // إخفاء الشاشة
+                // إخفاء شاشة المقدمة
                 screen.style.opacity = '0';
                 
                 setTimeout(() => {
@@ -424,6 +443,7 @@
             }, 13000); 
         }
 
+        // دالة تشغيل صوت النقر
         function playSound() {
             const audio = document.getElementById('ui-sound');
             if(audio) {
@@ -432,6 +452,7 @@
             }
         }
 
+        // بيانات الترجمة
         let currentLang = 'ar';
         const translations = {
             ar: {
@@ -439,7 +460,6 @@
                 title: 'نظام البلاغات الرسمي',
                 desc: 'منصة آمنة لتجهيز المراسلات القانونية بشكل احترافي ومباشر',
                 rec: 'بريد الجهة', sub: 'الموضوع',
-                bot: 'يوزر البوت', owner: 'يوزر المالك',
                 msg: 'نص الرسالة', btn: 'تجهيز وإرسال',
                 c1t: 'القناة الرسمية', c1d: 'تابع آخر الأخبار',
                 c2t: 'مجتمع الأعضاء', c2d: 'للنقاشات والاستفسارات',
@@ -450,7 +470,6 @@
                 title: 'Official Reporting System',
                 desc: 'Secure platform to prepare legal correspondence professionally',
                 rec: 'Recipient Email', sub: 'Subject',
-                bot: 'Bot Username', owner: 'Owner Username',
                 msg: 'Message Body', btn: 'Prepare & Send',
                 c1t: 'Official Channel', c1d: 'Follow Latest News',
                 c2t: 'Community Group', c2d: 'Discussions & Help',
@@ -458,6 +477,7 @@
             }
         };
 
+        // دالة تبديل اللغة
         function toggleLang() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             const t = translations[currentLang];
@@ -471,8 +491,6 @@
             document.getElementById('page-desc').textContent = t.desc;
             document.getElementById('lbl-rec').textContent = t.rec;
             document.getElementById('lbl-sub').textContent = t.sub;
-            document.getElementById('lbl-bot').textContent = t.bot;
-            document.getElementById('lbl-owner').textContent = t.owner;
             document.getElementById('lbl-msg').textContent = t.msg;
             document.getElementById('btn-send').textContent = t.btn;
             
@@ -484,24 +502,15 @@
             document.getElementById('card3-d').textContent = t.c3d;
         }
 
+        // دالة تجهيز الإيميل
         function handleEmail(e) {
             e.preventDefault();
             const rec = document.getElementById('rec-email').value;
             const sub = document.getElementById('subject').value;
             const msg = document.getElementById('message').value;
-            const bot = document.getElementById('bot-user').value;
-            const own = document.getElementById('owner-user').value;
 
-            let finalMsg = msg + "\n\n----------------\n";
-            if (currentLang === 'ar') {
-                finalMsg += "بيانات إضافية للبلاغ:\n";
-                if(bot) finalMsg += `- يوزر البوت: ${bot}\n`;
-                if(own) finalMsg += `- يوزر المالك: ${own}\n`;
-            } else {
-                finalMsg += "Additional Report Info:\n";
-                if(bot) finalMsg += `- Bot User: ${bot}\n`;
-                if(own) finalMsg += `- Owner User: ${own}\n`;
-            }
+            // لم نعد نضيف بيانات البوت/المالك هنا
+            let finalMsg = msg; 
 
             window.location.href = `mailto:${rec}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(finalMsg)}`;
         }
