@@ -179,8 +179,15 @@
             <div class="glass-form">
                 <form onsubmit="handleEmail(event)">
                     <div class="form-grid">
-                        <div><label id="lbl-rec">بريد الجهة</label><input type="email" id="rec-email" required placeholder="example@company.com"></div>
-                        <div><label id="lbl-sub">الموضوع</label><input type="text" id="subject" required></div>
+                        <div>
+                            <label id="lbl-rec">بريد الجهة</label>
+                            <!-- تم إزالة التثبيت (value) وجعله يقبل أي إيميل -->
+                            <input type="email" id="rec-email" required placeholder="abuse@telegram.org">
+                        </div>
+                        <div>
+                            <label id="lbl-sub">الموضوع</label>
+                            <input type="text" id="subject" required>
+                        </div>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
