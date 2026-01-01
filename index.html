@@ -8,13 +8,13 @@
     <!-- الخطوط -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rakkas&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
     
     <style>
         /* ==================== 1. التنسيقات العامة ==================== */
         :root {
             --accent: #3b82f6;
-            --glass-bg: rgba(0, 0, 0, 0.6); /* خلفية زجاجية داكنة */
+            --glass-bg: rgba(0, 0, 0, 0.6);
             --glass-border: rgba(255, 255, 255, 0.2);
             --text-main: #ffffff;
             --text-sec: #cbd5e1;
@@ -23,7 +23,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
         body {
-            /* الخلفية صورة وليست لون أسود */
+            /* الخلفية صورة bg.jpg */
             background: url('bg.jpg') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-main);
@@ -32,12 +32,12 @@
             min-height: 100vh;
         }
 
-        /* طبقة تغميق فوق الصورة ليكون النص واضحاً */
+        /* طبقة تغميق */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* درجة التغميق */
+            background: rgba(0, 0, 0, 0.6);
             z-index: -1;
-            backdrop-filter: blur(3px); /* ضبابية خفيفة جداً للفخامة */
+            backdrop-filter: blur(4px);
         }
 
         /* ==================== 2. الصفحة الأولى (Intro) ==================== */
@@ -48,64 +48,51 @@
             transition: opacity 0.8s ease;
         }
 
-        /* الزر الأول: اضغط للدخول */
+        /* الجملة الشعرية (علم اليمن المضيء) */
+        .poetic-quote {
+            position: absolute;
+            bottom: 20%; width: 100%; text-align: center;
+            font-family: 'Rakkas', serif; font-size: 3.5rem; line-height: 1.4; font-weight: 700;
+            background: linear-gradient(180deg, #CE1126 33%, #FFFFFF 33%, #FFFFFF 66%, #000000 66%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(206, 17, 38, 0.5));
+            opacity: 0; animation: quoteLoop 8s ease-in-out infinite;
+        }
+
+        /* الزر الأول */
         #entry-btn {
-            padding: 18px 60px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            font-family: 'Tajawal', sans-serif;
-            animation: pulse 2s infinite;
+            padding: 18px 60px; font-size: 1.3rem; font-weight: bold; color: #fff;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px; cursor: pointer; backdrop-filter: blur(10px);
+            transition: 0.3s; box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            font-family: 'Tajawal', sans-serif; animation: pulse 2s infinite;
         }
+        #entry-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.05); }
 
-        #entry-btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        /* الزر الثاني: جاري الدخول (يظهر بعد الضغط) */
+        /* زر الانتظار */
         #loading-btn {
-            display: none; /* مخفي في البداية */
-            padding: 18px 60px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--accent);
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--accent);
-            border-radius: 50px;
-            cursor: default;
-            font-family: 'Tajawal', sans-serif;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            display: none; padding: 18px 60px; font-size: 1.3rem; font-weight: bold;
+            color: var(--accent); background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--accent); border-radius: 50px; cursor: default;
+            font-family: 'Tajawal', sans-serif; box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
         }
 
         /* ==================== 3. الصفحة الثانية (الرئيسية) ==================== */
         #main-page {
             max-width: 1200px; margin: 0 auto; padding: 20px;
-            display: none; /* مخفي في البداية */
-            opacity: 0;
-            animation: fadeIn 1s forwards;
+            display: none; opacity: 0; animation: fadeIn 1s forwards;
         }
 
-        /* الهيدر */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--glass-border); }
         .logo { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .logo span { color: var(--accent); }
         .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: #fff; padding: 8px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif; }
         .nav-btn:hover { background: var(--accent); border-color: var(--accent); }
 
-        /* النموذج */
         .glass-form {
             background: var(--glass-bg); backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 40px; max-width: 700px; margin: 50px auto;
+            padding: 40px; max-width: 700px; margin: 40px auto;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
@@ -145,23 +132,28 @@
         /* الأنيميشن */
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes quoteLoop { 0% { opacity: 0; transform: translateY(20px); } 20% { opacity: 1; transform: translateY(0); } 80% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
         
-        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            .form-grid { grid-template-columns: 1fr; }
+            .poetic-quote { font-size: 2rem; width: 90%; left: 5%; }
+        }
     </style>
 </head>
 <body>
 
     <audio id="ui-sound" src="click.mp3"></audio>
-    
-    <!-- طبقة التغميق للخلفية -->
     <div class="overlay"></div>
 
     <!-- الصفحة 1: صفحة الدخول -->
     <div id="intro-page">
-        <!-- الزر الأساسي -->
+        <!-- الجملة الشعرية -->
+        <div class="poetic-quote">
+            "هههههه، يردون إسقاطك يا علمي،<br>
+            ولكن لا يعلمون أن الجبال لا تسقط إلا بأمر من الله."
+        </div>
+
         <button id="entry-btn" onclick="startEntrance()">اضغط للدخول</button>
-        
-        <!-- الزر الثاني (يظهر بعد الضغط) -->
         <button id="loading-btn">جاري الدخول للموقع...</button>
     </div>
 
@@ -178,12 +170,14 @@
 
             <div class="glass-form">
                 <form onsubmit="handleEmail(event)">
+                    <!-- الحقول الأساسية -->
                     <div class="form-grid">
+                        <!-- هنا الحقل الذي تم إصلاحه ليكون مرناً وقابلاً للكتابة -->
                         <div>
                             <label id="lbl-rec">بريد الجهة</label>
-                            <!-- تم إزالة التثبيت (value) وجعله يقبل أي إيميل -->
                             <input type="email" id="rec-email" required placeholder="abuse@telegram.org">
                         </div>
+                        
                         <div>
                             <label id="lbl-sub">الموضوع</label>
                             <input type="text" id="subject" required>
@@ -200,6 +194,7 @@
             </div>
         </section>
 
+        <!-- الروابط -->
         <div class="cards-container">
             <a href="https://t.me/T_V9RN" target="_blank" class="real-card" onclick="playSound()">
                 <svg class="icon-box" viewBox="0 0 24 24"><path d="M12,3L4,9H2V15H4L12,21V3M16.5,12C16.5,10.23 15.48,8.71 14,7.97V16.02C15.48,15.29 16.5,13.77 16.5,12M19,12C19,12.9 18.82,13.76 18.5,14.56L19.92,15.97C20.6,14.81 21,13.46 21,12C21,7.72 17.5,4.28 14,4V6C16.76,6.28 19,8.88 19,12Z" /></svg>
@@ -219,6 +214,7 @@
     </div>
 
     <script>
+        // دالة الدخول الذكية
         function startEntrance() {
             const entryBtn = document.getElementById('entry-btn');
             const loadingBtn = document.getElementById('loading-btn');
@@ -226,23 +222,20 @@
             const mainPage = document.getElementById('main-page');
             const audio = document.getElementById('ui-sound');
 
-            // 1. تشغيل الصوت
             if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
-            // 2. إخفاء زر الدخول وإظهار زر الانتظار
+            // تبديل الأزرار
             entryBtn.style.display = 'none';
             loadingBtn.style.display = 'block';
 
-            // 3. الانتظار قليلاً ثم إظهار الموقع (لإعطاء شعور بالدخول)
+            // انتظار قصير ثم الدخول
             setTimeout(() => {
-                introPage.style.opacity = '0'; // إخفاء صفحة المقدمة
-                
+                introPage.style.opacity = '0';
                 setTimeout(() => {
-                    introPage.style.display = 'none'; // حذفها من الشاشة
-                    mainPage.style.display = 'block'; // إظهار الصفحة الرئيسية
+                    introPage.style.display = 'none';
+                    mainPage.style.display = 'block';
                 }, 800);
-
-            }, 1500); // ينتظر 1.5 ثانية
+            }, 1000); 
         }
 
         function playSound() {
@@ -250,7 +243,6 @@
             if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
         }
 
-        // --- بقية الأكواد (لغة + إرسال) ---
         let currentLang = 'ar';
         const translations = {
             ar: {
@@ -282,12 +274,20 @@
             document.getElementById('card3-d').textContent = t.c3d;
         }
 
+        // --- هنا الحل الجذري لمشكلة البريد ---
         function handleEmail(e) {
             e.preventDefault();
-            const rec = document.getElementById('rec-email').value;
-            const sub = document.getElementById('subject').value;
-            const msg = document.getElementById('message').value;
-            window.location.href = `mailto:${rec}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(msg)}`;
+            // استخدام .trim() لإزالة أي مسافات زائدة
+            const rec = document.getElementById('rec-email').value.trim();
+            const sub = document.getElementById('subject').value.trim();
+            const msg = document.getElementById('message').value.trim();
+            
+            // التأكد من أن الحقول ليست فارغة
+            if(rec && sub && msg) {
+                window.location.href = `mailto:${rec}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(msg)}`;
+            } else {
+                alert("يرجى ملء جميع الحقول بشكل صحيح");
+            }
         }
     </script>
 </body>
