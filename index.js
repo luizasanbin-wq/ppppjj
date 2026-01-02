@@ -6,63 +6,60 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// السماح للموقع الخارجي بالاتصال بالسيرفر
 app.use(cors());
 app.use(express.json());
 
-// إعداد مرسل البريد (SMTP)
-// سيتم جلب البيانات من متغيرات البيئة في السيرفر لحماية الخصوصية
-const transporter = nodemailer.createTransport({
-    service: 'gmail', // أو يمكنك استخدام 'host' و 'port' إذا كان بريد آخر غير جيميل
-    auth: {
-        user: process.env.EMAIL_USER, // بريدك الإلكتروني
-        pass: process.env.EMAIL_PASS  // كلمة مرور التطبيقات (App Password)
-    }
-});
-
-// دالة الانتظار (Delay)
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms * 1000));
 
-// نقطة الاستقبال (API Endpoint)
 app.post('/api/send', async (req, res) => {
-    const { target_email, subject, message, count, interval } = req.body;
+    const { sender_email, sender_pass, target_email, subject, message, count, interval } = req.body;
 
-    // التحقق من البيانات
-    if (!target_email || !subject || !message || !count || !interval) {
-        return res.status(400).json({ error: 'يرجى تعبئة جميع الحقول المطلوبة' });
+    // إعداد الهيدر ليدعم التدفق (Streaming)
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Transfer-Encoding', 'chunked');
+
+    if (!sender_email || !sender_pass || !target_email || !subject || !message || !count || !interval) {
+        res.write(JSON.stringify({ type: 'error', msg: 'بيانات ناقصة' }) + "\n");
+        res.end();
+        return;
     }
 
-    // إرسال رد فوري للمستخدم بأن العملية بدأت (لتجنب تعليق الواجهة)
-    res.status(200).json({ success: true, message: 'بدأت عملية الإرسال في الخلفية' });
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: sender_email, pass: sender_pass }
+    });
 
-    console.log(`[START] Sending ${count} emails to ${target_email} every ${interval} seconds.`);
+    console.log(`[START] Job started: ${count} emails`);
 
-    // بدء عملية الإرسال في الخلفية
-    processEmails(target_email, subject, message, parseInt(count), parseInt(interval));
-});
-
-async function processEmails(to, subject, text, count, interval) {
     for (let i = 1; i <= count; i++) {
         try {
             await transporter.sendMail({
-                from: `"Equinox System" <${process.env.EMAIL_USER}>`,
-                to: to,
-                subject: `${subject} #${i}`, // إضافة رقم للعنوان لتجنب الفلترة
-                text: text,
-                html: `<div dir="rtl"><h3>${subject}</h3><p>${text}</p><hr><small>Msg ID: ${Date.now()}</small></div>`
+                from: `"System" <${sender_email}>`,
+                to: target_email,
+                subject: `${subject} (${i})`,
+                text: message,
+                html: `<div dir="rtl">${message}<br><small>Message ID: ${i}-${Date.now()}</small></div>`
             });
-            console.log(`✅ Email ${i}/${count} sent to ${to}`);
+            
+            // إرسال إشعار نجاح للمتصفح
+            res.write(JSON.stringify({ type: 'progress', status: 'success', index: i }) + "\n");
+            console.log(`✅ Sent ${i}`);
+
         } catch (error) {
-            console.error(`❌ Failed to send email ${i}:`, error.message);
+            // إرسال إشعار فشل للمتصفح
+            res.write(JSON.stringify({ type: 'progress', status: 'failed', index: i, error: error.message }) + "\n");
+            console.error(`❌ Failed ${i}`);
         }
 
-        // انتظار الفاصل الزمني قبل الرسالة التالية (إلا إذا كانت الأخيرة)
+        // الانتظار (إلا إذا كانت الأخيرة)
         if (i < count) await sleep(interval);
     }
-    console.log(`[DONE] Finished sending to ${to}`);
-}
 
-// تشغيل السيرفر
+    // إشعار بالانتهاء
+    res.write(JSON.stringify({ type: 'done' }) + "\n");
+    res.end();
+});
+
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
